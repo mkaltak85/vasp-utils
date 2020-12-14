@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+echo "#--------------------------- makefile.include ---------------------------------"
+echo "CPP_OPTIONS=  -DCACHE_SIZE=4000 \\
+              -Davoidalloc \\
+              -Dvasp6 \\
+              -Duse_bse_te \\
+              -Dtbdyn \\
+              -DPROFILING \\"
+if [ -x "$(command -v git)" ]; then
+echo "              -DVASP_VERSION=\"'\$(shell git log -1 --pretty=format:"%h")-\$(VASP_TOOLCHAIN)'\"\\"
+else
+echo "              -DVASP_VERSION=\"'\$(VASP_TOOLCHAIN)'\"\\"
+fi
+echo "              -DML_LEARNING_ACTIVE \\
+              ${CPP_OPTIONS}
+
+# fortran compiler
+FC         = ${MYFC} ${FCFLAGS}
+# fortran linker
+FCL        = ${MYFCL} ${FCLFLAGS}
+
+# c-compiler
+CC         = ${CC}
+# preprocessor
+CPP        = ${FPP} ${FPPFLAGS}
+
+# optimization flags
+OFLAG_IN   = ${OFLAG} 
+
+# other fortran flags
+FREE       = ${FREE}  
+#
+# add following options to FREE for debugging 
+# for gfortran:
+# -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=invalid,zero,overflow,underflow -finit-real=nan
+# debugging with ifc 
+# -g -check all -fpe0 -warn -traceback -debug extended
+# debugging with pgi , nvidia
+# -Minfo=all -g -backtrace 
+FFLAGS     = ${FFLAGS}
+DEBUG      = ${DEBUG}
+
+"
+if [ ! -z ${MY_SOURCE_O1+1} ] ; then
+echo "SOURCE_O1  := ${MY_SOURCE_O1}"
+fi
+if [ ! -z ${MY_SOURCE_O2+1} ] ; then
+echo "SOURCE_O2  := ${MY_SOURCE_O2}"
+fi
+
+echo "
+# linked libraries 
+LLIBS      = ${LLIBS}
+INCS       = ${INCS} 
+
+OBJECTS_LIB = linpack_double.o"
+if [ ! -z ${MPI_INC+1} ] ; then 
+echo "
+# in case parallel version is build, vasp is linked to following fft modules
+OBJECTS     = fftmpiw.o fftmpi_map.o  fftw3d.o  fft3dlib.o
+OBJECTS_O1 += fftw3d.o fftmpi.o fftmpiw.o
+OBJECTS_O2 += fft3dlib.o
+OBJECTS_LIB+= getshmem.o"
+else
+echo "
+# in case serial version is build, vasp is linked to following fft modules
+OBJECTS     = fft3dfurth.o fft3dlib.o
+OBJECTS_O1 += fft3dfurth.o fftw3d.o fftmpi.o fftmpiw.o
+OBJECTS_O2 += fft3dlib.o"
+fi 
+echo "
+# For what used to be vasp.5.lib, set by compiler module now 
+CPP_LIB     = ${FPP} ${FPPFLAGS}
+FC_LIB      = ${FC}
+CC_LIB      = ${CC}
+FREE_LIB    = ${FREE}
+# For the parser library
+CXX_PARS    = ${CXX}
+LLIBS      += -Lparser -lparser -lstdc++
+"
+if [ ! -z ${MY_CXX_FFLIB+1} ] ; then
+echo " 
+# compiler FFT library 
+CXX_FFTLIB  = ${MY_CXX_FFTLIB} 
+INCS_FFTLIB = ${MY_INCS_FFTLIB}
+LIBS       += fftlib
+LLIBS      += -ldl
+"
+fi
+
+echo " 
+# Normally no need to change this
+SRCDIR     = ../../src
+BINDIR     = ../../bin
+
+#---------------------------------------
+# GPU versions vasp_gpu and vasp_gpu_ncl
+#---------------------------------------
+# same on all systems 
+OBJECTS_GPU  = fftmpiw.o fftmpi_map.o fft3dlib.o fftw3d_gpu.o fftmpiw_gpu.o
+CFLAGS       = -fPIC -DADD_ -DMAGMA_WITH_MKL -DMAGMA_SETAFFINITY -DGPUSHMEM=300 -DHAVE_CUBLAS
+# these variables are set by environment module cuda  on guppies 
+"
+if [ ! -z ${CPP_GPU+1} ] ; then 
+echo "CPP_GPU      = ${CPP_GPU} "
+fi
+if [ ! -z ${NVCC+1} ] ; then 
+echo "NVCC         = ${NVCC} "
+fi 
+if [ ! -z ${CUDA_LIB+1} ] ; then 
+echo "CUDA_LIB     = ${CUDA_LIB}"
+fi 
+if [ ! -z ${GENCODE_ARCH+1} ] ; then 
+echo "GENCODE_ARCH = ${GENCODE_ARCH} "
+fi 
+echo "#------------------------------------------------------------------------------"
+
