@@ -5,11 +5,11 @@ echo "CPP_OPTIONS=  -DCACHE_SIZE=4000 \\
               -Dvasp6 \\
               -Duse_bse_te \\
               -Dtbdyn \\
-              -DPROFILING \\ "
+              -DPROFILING \\"
 if [ -x "$(command -v git)" ]; then
-echo "              -DVASP_VERSION=\"'\$(shell git log -1 --pretty=format:"%h")-\$(VASP_TOOLCHAIN)'\"\\ "
+echo "              -DVASP_VERSION=\"'\$(shell git log -1 --pretty=format:"%h")-\$(VASP_TOOLCHAIN)'\"\\"
 else
-echo "              -DVASP_VERSION=\"'\$(VASP_TOOLCHAIN)'\"\\ "
+echo "              -DVASP_VERSION=\"'\$(VASP_TOOLCHAIN)'\"\\"
 fi
 echo "              -DML_LEARNING_ACTIVE \\
               ${CPP_OPTIONS}
