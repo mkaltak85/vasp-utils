@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#SBATCH --job-name=job
+echo "#SBATCH --job-name=job
 #SBATCH --output=slurm_%j.log
 #SBATCH --error=slurm_%j.log
  
@@ -16,13 +16,14 @@
 #module load vasp-intel_mkl-dev 
 
 # parallel build 
-#make -j$SLURM_NTASKS std gam ncl DEPS=$SLURM_NTASKS
+#make -j\$SLURM_NTASKS std gam ncl DEPS=\$SLURM_NTASKS
 
 # use this in combination with Intel MPI to enable "srun" 
-#export I_MPI_PMI_LIBRARY=$SLURM_PMI_LIB
+#export I_MPI_PMI_LIBRARY=\$SLURM_PMI_LIB
 
 # run job on multi nodes
-#srun -N $SLURM_NODES -n $SLURM_NTASKS /path/to/exe
+#srun -N \$SLURM_NODES -n \$SLURM_NTASKS /path/to/exe
 
 # run job with mpirun 
-# mpirun -np $SLURM_NTASKS /path/to/exe
+# mpirun -np \$SLURM_NTASKS /path/to/exe
+"
