@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+echo "
+run a job interactively as follows:
+srun --nodes=1 --ntasks-per-node=8 --time=01:00:00 --pty bash -i
+"
 
 if [ "$#" -eq 1 ] ; then
   f=$1
@@ -27,12 +31,17 @@ if [ -f $f ] ; then
 fi
 
 echo "#!/usr/bin/env bash
+#
+# run a job interactively as follows:
+# srun --nodes=1 --ntasks-per-node=8 --time=01:00:00 --pty bash -i
+#
 #SBATCH --job-name=job
 #SBATCH --output=slurm_%j.log
 #SBATCH --error=slurm_%j.log
  
 #SBATCH -N 1
 #SBATCH --ntasks=22
+#SBATCH --time=01:00:00
 
 # print hosts 
 # srun hostname 

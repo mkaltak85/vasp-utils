@@ -64,8 +64,11 @@ OBJECTS_LIB+= getshmem.o"
 else
 echo "
 # in case serial version is build, vasp is linked to following fft modules
-OBJECTS     = fft3dfurth.o fft3dlib.o
-OBJECTS_O1 += fft3dfurth.o fftw3d.o fftmpi.o fftmpiw.o
+#OBJECTS     = fft3dfurth.o fft3dlib.o
+#OBJECTS_O1 += fft3dfurth.o fftw3d.o fftmpi.o fftmpiw.o
+#OBJECTS_O2 += fft3dlib.o
+OBJECTS     = fftw3d.o fft3dlib.o
+OBJECTS_O1 += fftw3d.o 
 OBJECTS_O2 += fft3dlib.o"
 fi 
 echo "
@@ -75,7 +78,7 @@ FC_LIB      = ${FC}
 CC_LIB      = ${CC}
 FREE_LIB    = ${FREE}
 # For the parser library
-CXX_PARS    = ${CXX}
+CXX_PARS    = ${CXX} ${CXX_FLAGS}
 LLIBS      += -Lparser -lparser -lstdc++
 "
 if [ ! -z ${MY_CXX_FFLIB+1} ] ; then
