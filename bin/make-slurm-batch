@@ -58,7 +58,7 @@ echo "#!/usr/bin/env bash
 #export I_MPI_PMI_LIBRARY=\$SLURM_PMI_LIB
 
 # run job on multi nodes
-#srun -N \$SLURM_NODES -n \$SLURM_NTASKS /path/to/exe
+#srun -N \$SLURM_NNODES -n \$SLURM_NTASKS /path/to/exe
 
 # run job with mpirun 
 # mpirun -np \$SLURM_NTASKS /path/to/exe
